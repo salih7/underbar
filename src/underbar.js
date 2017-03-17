@@ -300,14 +300,19 @@
   // instead if possible.
   _.memoize = function(func) {
   	var result;
-  	var lastArgs;
+  	var results = [];
+  	var usedArgs = [];
 
   	return function() {
-      if(JSON.stringify(arguments) !== JSON.stringify(lastArgs)) {	  		
+      var argUsed = _.indexOf(usedArgs, JSON.stringify(arguments));
+      if(argUsed == -1) {	  		
         result = func.apply(this, arguments);
-        lastArgs = arguments;
-      }
-      return result; 
+        usedArgs.push(JSON.stringify(arguments));
+        results.push(result);
+        return result;
+      } else {
+      	return results[argUsed];
+      } 
     };
   };
 
